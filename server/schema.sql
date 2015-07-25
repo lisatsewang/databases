@@ -4,8 +4,9 @@ USE chat;
 
 CREATE TABLE messages (
   /* Describe your table here.*/
-  id int not null auto_increment primary key,
-  id_users int not null,
+  objectId int not null auto_increment primary key,
+  id_users int,
+  username varchar(50),
   message varchar(100),
   roomname varchar(15)
 );

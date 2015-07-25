@@ -17,7 +17,7 @@ app = {
 
 
       app.loadMsgs();
-      // setInterval( app.loadMsgs.bind(app), 1000);
+      setInterval( app.loadMsgs.bind(app), 1000);
 
       $('#send').on('submit', app.handleSubmit);
     },
@@ -27,7 +27,7 @@ app = {
 
       var message = {
         username: app.username,
-        text: app.$text.val()
+        message: app.$text.val()
       };
 
       app.$text.val('');
@@ -37,7 +37,7 @@ app = {
 
     renderMessage: function(message){
       var $user = $("<div>", {class: 'user'}).text(message.username);
-      var $text = $("<div>", {class: 'text'}).text(message.text);
+      var $text = $("<div>", {class: 'text'}).text(message.message);
       var $message = $("<div>", {class: 'chat', 'data-id': message.objectId }).append($user, $text);
       return $message;
     },
@@ -53,6 +53,7 @@ app = {
     },
 
     displayMessages: function(messages){
+      messages = JSON.parse(messages);
       for( var i = 0; i < messages.length; i++ ){
         app.displayMessage(messages[i]);
       }
@@ -61,10 +62,10 @@ app = {
     loadMsgs: function(){
       $.ajax({
         url: app.server,
-        data: { order: '-createdAt' },
+        // data: { order: '-createdAt' },
         contentType: 'application/json',
         success: function(json){
-          app.displayMessages(json.results);
+          app.displayMessages(json);
         },
         complete: function(){
           app.stopSpinner();
@@ -73,6 +74,7 @@ app = {
     },
 
     sendMsg: function(message){
+      console.log(message);
       app.startSpinner();
       $.ajax({
         type: 'POST',
@@ -80,6 +82,7 @@ app = {
         data: JSON.stringify(message),
         contentType: 'application/json',
         success: function(json){
+          console.log('good');
           message.objectId = json.objectId;
           app.displayMessage(message);
         },
